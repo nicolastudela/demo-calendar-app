@@ -35,6 +35,19 @@ const DayBox = ({
 }) => {
   const classes = useBoxStyles();
 
+  if (reminders) {
+    reminders.sort((a, b) => {
+      const [bHours, bMinutes] = getTimeFromDateTime(b.dateTime).split(":");
+      const [aHours, aMinutes] = getTimeFromDateTime(a.dateTime).split(":");
+
+      if (bHours === aHours) {
+        return aMinutes - bMinutes;
+      } else {
+        return aHours - bHours;
+      }
+    });
+  }
+
   return (
     <Box display="flex" flexDirection="column" {...rest}>
       <Box display="flex" flexDirection="row" justifyContent="space-between">

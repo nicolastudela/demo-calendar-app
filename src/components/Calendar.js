@@ -28,8 +28,8 @@ const useStyles = makeStyles({
     justifyContent: "stretch"
   },
   modalContainer: {
-    top: `20%`,
-    left: `20%`,
+    top: `10%`,
+    left: `10%`,
     position: "absolute",
     display: "grid",
     justifyContent: "center",

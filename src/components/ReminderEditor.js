@@ -48,111 +48,109 @@ const ReminderEditor = ({ reminder, onSave, onDelete, ...rest }) => {
   };
 
   return (
-    <Box width="30%" {...rest}>
-      <Box display="flex" width="400px" flexDirection="column">
-        <form>
-          <TextField
-            id="reminder-text"
-            label="reminderText"
-            helperText="Please enter your reminder"
-            multiline
-            rowsMax="4"
-            value={editedReminder.text}
-            onChange={handleChange("text")}
-            margin="normal"
-            variant="outlined"
-            fullWidth
-            className={classes.textField}
-          />
-          <TextField
-            id="time"
-            label="reminder-time"
-            type="datetime-local"
-            defaultValue={reminder.dateTime}
-            onChange={handleChange("dateTime")}
-            InputLabelProps={{
-              shrink: true
-            }}
-            fullWidth
-            className={classes.textField}
-          />
-          <TextField
-            id="city"
-            select
-            // label="reminder-city"
-            value={editedReminder.city}
-            onChange={handleChange("city")}
-            SelectProps={{
-              native: true
-            }}
-            helperText="Please select your city"
-            margin="normal"
-            variant="outlined"
-            fullWidth
-            className={classes.textField}
-          >
-            {DEFAULT_CITIES.map(([key, value]) => (
-              <option key={key} value={value}>
-                {key}
-              </option>
+    <Box display="flex" width="400px" flexDirection="column" {...rest}>
+      <form>
+        <TextField
+          id="reminder-text"
+          label="reminderText"
+          helperText="Please enter your reminder"
+          multiline
+          rowsMax="4"
+          value={editedReminder.text}
+          onChange={handleChange("text")}
+          margin="normal"
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          id="time"
+          label="reminder-time"
+          type="datetime-local"
+          defaultValue={reminder.dateTime}
+          onChange={handleChange("dateTime")}
+          InputLabelProps={{
+            shrink: true
+          }}
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          id="city"
+          select
+          // label="reminder-city"
+          value={editedReminder.city}
+          onChange={handleChange("city")}
+          SelectProps={{
+            native: true
+          }}
+          helperText="Please select your city"
+          margin="normal"
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        >
+          {DEFAULT_CITIES.map(([key, value]) => (
+            <option key={key} value={value}>
+              {key}
+            </option>
+          ))}
+        </TextField>
+        {forecast && (
+          <Box display="flex" flexDirection="row">
+            {`Forecast:`}
+            {forecast.map(({ weather, dateTime }) => (
+              <Box ml="2px" key={weather}>
+                {weather}
+              </Box>
             ))}
-          </TextField>
-          {forecast && (
-            <Box display="flex" flexDirection="row">
-              {`Forecast:`}
-              {forecast.map(({ weather, dateTime }) => (
-                <Box ml="2px" key={weather}>
-                  {weather}
-                </Box>
-              ))}
-            </Box>
-          )}
-          <TextField
-            id="color"
-            select
-            value={editedReminder.color}
-            onChange={handleChange("color")}
-            SelectProps={{
-              native: true
-            }}
-            helperText="Please select the color"
-            margin="normal"
-            variant="outlined"
-            fullWidth
-            className={classes.textField}
-          >
-            {DEFAULT_COLORS.map(([key, value]) => (
-              <option key={key} value={value}>
-                {key}
-              </option>
-            ))}
-          </TextField>
-          <Box
-            display="flex"
-            flexDirection="row"
-            justifyContent="space-between"
-            width="70%"
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              id="save-reminder"
-              onClick={onSubmit}
-            >
-              Save
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={onDeleteAction}
-              disabled={!editedReminder.id}
-              id="delete-reminder"
-            >
-              Delete
-            </Button>
           </Box>
-        </form>
-      </Box>
+        )}
+        <TextField
+          id="color"
+          select
+          value={editedReminder.color}
+          onChange={handleChange("color")}
+          SelectProps={{
+            native: true
+          }}
+          helperText="Please select the color"
+          margin="normal"
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        >
+          {DEFAULT_COLORS.map(([key, value]) => (
+            <option key={key} value={value}>
+              {key}
+            </option>
+          ))}
+        </TextField>
+        <Box
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
+          width="70%"
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            id="save-reminder"
+            onClick={onSubmit}
+          >
+            Save
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={onDeleteAction}
+            disabled={!editedReminder.id}
+            id="delete-reminder"
+          >
+            Delete
+          </Button>
+        </Box>
+      </form>
     </Box>
   );
 };
