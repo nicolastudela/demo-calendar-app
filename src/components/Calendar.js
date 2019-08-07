@@ -1,9 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { getCalendarDays, getDayFromSTRDate } from "../utils/calendarUtils";
+import React, { useState } from "react";
+import { getCalendarDays, getDateFromDateTime } from "../utils/calendarUtils";
+import DayBox from "./DayBox";
+import ReminderEditor from "./ReminderEditor";
 import { makeStyles } from "@material-ui/styles";
-import Box from "@material-ui/core/Box";
+import { Box, Modal } from "@material-ui/core";
+import { DEFAULT_CITIES } from "../commons";
 
 const NOW = new Date();
+const DAYS_OF_THE_WEEK = [
+  "Sunday",
+  "Monday",
+  "Tuestday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday"
+];
 
 const useStyles = makeStyles({
   calendarContainer: {
@@ -15,171 +27,125 @@ const useStyles = makeStyles({
     alignItems: "stretch",
     justifyContent: "stretch"
   },
-  item: {
-    border: "1px solid",
-    display: "flex"
-  },
-  itemDaysLabel: {
-    backgroundColor: "lightBlue",
+  modalContainer: {
+    top: `20%`,
+    left: `20%`,
+    position: "absolute",
+    display: "grid",
     justifyContent: "center",
-    alignItems: "center"
-  },
-  itemBox: {
-    flexDirection: "column",
-    overflow: "auto"
+    alignItems: "center",
+    border: "2px solid #000",
+    padding: "10px",
+    backgroundColor: "white"
   }
 });
-
-const useBoxStyles = makeStyles({
-  container: {
-    display: "flex",
-    flexDirection: "column"
-  },
-  reminderList: {
-    overflow: "auto"
-  },
-  actions: {
-    fontWeight: "bold",
-    margin: "2px",
-    cursor: "pointer",
-    border: "0.1px solid",
-    padding: "1px",
-    alignSelf: "flex-end"
-  },
-  reminder: {
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    overflow: "hidden"
-  }
-});
-
-const DayBox = ({
-  className,
-  date,
-  reminders,
-  onEditReminder,
-  onAddReminder,
-  onRemoveReminders
-}) => {
-  const classes = useBoxStyles();
-
-  return (
-    <div className={`${className} ${classes.container}`}>
-      <Box display="flex" flexDirection="row" justifyContent="space-between">
-        <Box pl="3px">{getDayFromSTRDate(date)}</Box>
-        <Box>
-          <span
-            id={`add-${date}`}
-            style={{
-              backgroundColor: "lightgreen"
-            }}
-            className={`${classes.actions}`}
-            onClick={() => onAddReminder(date)}
-          >
-            Add
-          </span>
-          <span
-            className={`${classes.actions}`}
-            style={{
-              backgroundColor: "lightsalmon"
-            }}
-            onClick={() => onRemoveReminders(date)}
-          >
-            Remove all
-          </span>
-        </Box>
-      </Box>
-      <div className={`${classes.reminderList}`}>
-        <ul>
-          {reminders &&
-            reminders.map(reminder => (
-              <li key={reminder.id}>
-                <div
-                  className={`${classes.reminder}`}
-                  onClick={() => onEditReminder(reminder)}
-                >
-                  {`${reminder.time} ${reminder.text}`}
-                </div>
-              </li>
-            ))}
-        </ul>
-      </div>
-    </div>
-  );
-};
 
 export default () => {
   const [selectedReminder, setSelectedReminder] = useState(null);
-  const [reminders, setReminders] = useState([]);
+  const [reminders, setReminders] = useState(null);
   const classes = useStyles();
 
   const [selectedMonth, setSelectedMonth] = useState({
     year: NOW.getFullYear(),
-    month: NOW.getMonth()
+    month: NOW.getMonth() + 1
   });
 
   const onSelectReminder = reminder => {
-    alert(reminder);
+    console.log(reminder);
+    setSelectedReminder(reminder);
+  };
+
+  const onEditReminder = reminder => {
+    const remId = reminder.id
+      ? reminder.id
+      : `${reminder.dateTime}-${Math.random()
+          .toString(16)
+          .slice(-4)}`;
+    setReminders({
+      ...reminders,
+      ...{
+        [remId]: { ...reminder, ...{ id: remId } }
+      }
+    });
+    setSelectedReminder(null);
   };
 
   const onAddReminder = date => {
-    alert(`MOCKING add reminder for this date ${date}}`);
-    setReminders(
-      reminders.concat([
-        {
-          id: `${date}-${Math.random()
-            .toString(16)
-            .slice(-4)}`,
-          date,
-          time: `${new Date().getHours()}:${new Date().getMinutes()}`,
-          text: `This is a mocked Reminder ${Math.random()
-            .toString(16)
-            .slice(-4)}`
-        }
-      ])
-    );
+    setSelectedReminder({
+      text: "",
+      dateTime: `${date}T12:00`,
+      color: "green",
+      city: DEFAULT_CITIES[0][1]
+    });
+  };
+
+  const onDeleteReminder = reminder => {
+    const { [reminder.id]: unwanted, ...restReminders } = reminders;
+    setReminders(restReminders);
+    setSelectedReminder(null);
   };
 
   const onRemoveReminders = date => {
-    alert(`Remove all reminders for this date ${date}`);
+    alert(`SOON it will remove all reminders for the following date: ${date}`);
   };
 
   const daysWithReminder = getCalendarDays(selectedMonth).map(date => {
     return {
       date,
-      dateReminders: reminders.filter(rmd => rmd.date === date)
+      dateReminders: reminders
+        ? [...Object.values(reminders)].filter(
+            rmd => getDateFromDateTime(rmd.dateTime) === date
+          )
+        : []
     };
   });
 
   return (
-    <Box height="600px">
-      <div className={classes.calendarContainer}>
-        {[
-          "Sunday",
-          "Monday",
-          "Tuestday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday"
-        ].map(day => (
-          <div className={`${classes.itemDaysLabel} ${classes.item}`} key={day}>
-            {day}
-          </div>
-        ))}
-        {daysWithReminder.map(({ date, dateReminders }) => (
-          // component rendering a single box per day
-          <DayBox
-            className={classes.item}
-            key={date}
-            date={date}
-            reminders={dateReminders}
-            onEditReminder={onSelectReminder}
-            onAddReminder={onAddReminder}
-            onRemoveReminders={onRemoveReminders}
+    <>
+      <Modal
+        open={!!selectedReminder}
+        onClose={() => setSelectedReminder(null)}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <div>
+          <ReminderEditor
+            className={classes.modalContainer}
+            reminder={selectedReminder}
+            onSave={onEditReminder}
+            onDelete={onDeleteReminder}
           />
-        ))}
-      </div>
-    </Box>
+        </div>
+      </Modal>
+      <Box height="600px">
+        <div className={classes.calendarContainer}>
+          {DAYS_OF_THE_WEEK.map(day => (
+            <Box
+              display="flex"
+              border="1px solid"
+              bgcolor="lightBlue"
+              alignItems="center"
+              justifyContent="center"
+              key={day}
+            >
+              {day}
+            </Box>
+          ))}
+          {daysWithReminder.map(({ date, dateReminders }) => (
+            // component rendering a single box per day
+            <DayBox
+              display="flex"
+              border="1px solid"
+              key={date}
+              date={date}
+              reminders={dateReminders}
+              onEditReminder={onSelectReminder}
+              onAddReminder={onAddReminder}
+              onRemoveReminders={onRemoveReminders}
+            />
+          ))}
+        </div>
+      </Box>
+    </>
   );
 };
