@@ -1,3 +1,18 @@
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+];
+
 export const getCalendarDays = ({ year, month }) => {
   const firstDateOfMonth = new Date(year, month - 1, 1);
   let firstDateOfCalendar = new Date(firstDateOfMonth);
@@ -21,11 +36,15 @@ export const formattedDateTime = date =>
     "0" + date.getDate()
   ).slice(-2)}T${date.getHours()}:${date.getMinutes()}`;
 
-export const parseFormattedDateTime = formattedDateTime =>
-  new Date(formattedDateTime);
+export const fromYearAndMonthToDate = (year, month) =>
+  new Date(`${year}-${("0" + month).slice(-2)}-01T12:00`);
 
 export const getDayFromDate = date => date.split(/[-T]/)[2];
+
+export const getMonthFromDate = date => date.split(/[-T]/)[1];
 
 export const getDateFromDateTime = date => date.split(/[T]/)[0];
 
 export const getTimeFromDateTime = date => date.split(/[T]/)[1];
+
+export const getMonthLabel = month => monthNames[month - 1];

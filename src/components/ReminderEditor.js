@@ -98,12 +98,14 @@ const ReminderEditor = ({ reminder, onSave, onDelete, ...rest }) => {
         </TextField>
         {forecast && (
           <Box display="flex" flexDirection="row">
-            {`Forecast:`}
-            {forecast.map(({ weather, dateTime }) => (
-              <Box ml="2px" key={weather}>
-                {weather}
-              </Box>
-            ))}
+            <h2>
+              {`Forecast:`}
+              {forecast.map(({ weather, dateTime }) => (
+                <Box display="inline" ml="2px" key={weather}>
+                  {weather}
+                </Box>
+              ))}
+            </h2>
           </Box>
         )}
         <TextField

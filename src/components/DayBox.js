@@ -54,25 +54,23 @@ const DayBox = ({
       <Box display="flex" flexDirection="row" justifyContent="space-between">
         <Box pl="3px">{getDayFromDate(date)}</Box>
         <Box>
-          <span
+          <Box
+            display="inline"
+            bgcolor="lightgreen"
             data-testid={`add-${date}`}
-            style={{
-              backgroundColor: "lightgreen"
-            }}
             className={`${classes.actions}`}
             onClick={() => onAddReminder(date)}
           >
             Add
-          </span>
-          <span
+          </Box>
+          <Box
+            display="inline"
+            bgcolor="lightsalmon"
             className={`${classes.actions}`}
-            style={{
-              backgroundColor: "lightsalmon"
-            }}
             onClick={() => onRemoveReminders(date)}
           >
             Remove all
-          </span>
+          </Box>
         </Box>
       </Box>
       <div className={`${classes.reminderList}`}>

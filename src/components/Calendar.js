@@ -1,9 +1,15 @@
 import React, { useState } from "react";
-import { getCalendarDays, getDateFromDateTime } from "../utils/calendarUtils";
+import {
+  getCalendarDays,
+  getDateFromDateTime,
+  getMonthLabel,
+  fromYearAndMonthToDate,
+  getMonthFromDate
+} from "../utils/calendarUtils";
 import DayBox from "./DayBox";
 import ReminderEditor from "./ReminderEditor";
 import { makeStyles } from "@material-ui/styles";
-import { Box, Modal } from "@material-ui/core";
+import { Box, Modal, Button, Typography } from "@material-ui/core";
 import { DEFAULT_CITIES } from "../commons";
 
 const NOW = new Date();
@@ -40,19 +46,23 @@ const useStyles = makeStyles({
   }
 });
 
+const changeMonth = (year, month, numOfMonths) => {
+  const date = fromYearAndMonthToDate(year, month);
+  date.setMonth(date.getMonth() + numOfMonths);
+  return date;
+};
+
 export default () => {
   const [selectedReminder, setSelectedReminder] = useState(null);
   const [reminders, setReminders] = useState(null);
   const classes = useStyles();
 
-  // TODO SELECT MONTH BONUS FUNCTIONALITY WOULD BE EASILY ADDED USING THIS PIECE OF STATE.
   const [selectedMonth, setSelectedMonth] = useState({
     year: NOW.getFullYear(),
     month: NOW.getMonth() + 1
   });
 
   const onSelectReminder = reminder => {
-    console.log(reminder);
     setSelectedReminder(reminder);
   };
 
@@ -72,6 +82,7 @@ export default () => {
   };
 
   const onAddReminder = date => {
+    // creates a transient reminder, defaulting some values
     setSelectedReminder({
       text: "",
       dateTime: `${date}T12:00`,
@@ -86,9 +97,30 @@ export default () => {
     setSelectedReminder(null);
   };
 
+  //BONUS FEATURE: removing all reminders for a specific day
   const onRemoveReminders = date => {
-    //TODO BONUS FEATURE, going through reminders and removing all belonging to this date
-    alert(`SOON it will remove all reminders for the following date: ${date}`);
+    setReminders(
+      [...Object.values(reminders)].filter(
+        ({ dateTime }) => getDateFromDateTime(dateTime) !== date
+      )
+    );
+  };
+
+  //BONUS FEATURE: Supporting more than one month
+  const onNextMonth = () => {
+    const newDate = changeMonth(selectedMonth.year, selectedMonth.month, +1);
+    setSelectedMonth({
+      year: newDate.getFullYear(),
+      month: newDate.getMonth() + 1
+    });
+  };
+
+  const onPreviousMonth = () => {
+    const newDate = changeMonth(selectedMonth.year, selectedMonth.month, -1);
+    setSelectedMonth({
+      year: newDate.getFullYear(),
+      month: newDate.getMonth() + 1
+    });
   };
 
   const daysWithReminder = getCalendarDays(selectedMonth).map(date => {
@@ -120,6 +152,13 @@ export default () => {
         </div>
       </Modal>
       <Box height="600px">
+        <Box display="flex" my="5px">
+          <Button onClick={onPreviousMonth}>{`<`}</Button>
+          <Typography variant="h3">
+            {getMonthLabel(selectedMonth.month)}
+          </Typography>
+          <Button onClick={onNextMonth}>{`>`}</Button>
+        </Box>
         <div className={classes.calendarContainer}>
           {DAYS_OF_THE_WEEK.map(day => (
             <Box
@@ -134,12 +173,16 @@ export default () => {
             </Box>
           ))}
           {daysWithReminder.map(({ date, dateReminders }) => (
-            // component rendering a single box per day
             <DayBox
               display="flex"
               border="1px solid"
               key={date}
               date={date}
+              bgcolor={
+                parseInt(getMonthFromDate(date)) !== selectedMonth.month
+                  ? "gray"
+                  : "transparent"
+              }
               reminders={dateReminders}
               onEditReminder={onSelectReminder}
               onAddReminder={onAddReminder}
