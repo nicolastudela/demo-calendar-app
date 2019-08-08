@@ -12,6 +12,7 @@ const useBoxStyles = makeStyles({
 
 const ReminderEditor = ({ reminder, onSave, onDelete, ...rest }) => {
   const [editedReminder, setEditedRemider] = useState(reminder);
+  const [invalidFields, setInvalidFields] = useState({});
   const [city, setCity] = useState({ city: editedReminder.city });
   const [forecast, setForecast] = useState([]);
 
@@ -33,6 +34,14 @@ const ReminderEditor = ({ reminder, onSave, onDelete, ...rest }) => {
       setCity({ city: value });
     }
 
+    if (name === "text" && value.length > 30) {
+      setInvalidFields({ text: "Number of chars exceded" });
+      return;
+    } else {
+      const { text: _, ...otherInvalidFields } = invalidFields;
+      setInvalidFields(otherInvalidFields);
+    }
+
     setEditedRemider({
       ...editedReminder,
       [name]: value
@@ -40,7 +49,9 @@ const ReminderEditor = ({ reminder, onSave, onDelete, ...rest }) => {
   };
 
   const onSubmit = () => {
-    onSave(editedReminder);
+    if (Object.entries(invalidFields).length === 0) {
+      onSave(editedReminder);
+    }
   };
 
   const onDeleteAction = () => {
@@ -52,8 +63,9 @@ const ReminderEditor = ({ reminder, onSave, onDelete, ...rest }) => {
       <form>
         <TextField
           id="reminder-text"
+          error={invalidFields.text}
           label="reminderText"
-          helperText="Please enter your reminder"
+          helperText="Please enter your reminder (30 chars max)"
           multiline
           rowsMax="4"
           value={editedReminder.text}
@@ -134,6 +146,7 @@ const ReminderEditor = ({ reminder, onSave, onDelete, ...rest }) => {
             color="primary"
             id="save-reminder"
             onClick={onSubmit}
+            disabled={Object.entries(invalidFields).length !== 0}
           >
             Save
           </Button>

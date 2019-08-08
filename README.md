@@ -1,5 +1,16 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+**Note about cities: For the sake of simplicity you can only choose between a set of predefined cities `src/commons.js`.  I made that choice in order to check the forecast without mapping a free input text into valid cities names supported by the weather service (OpenWeather)**
+
+
+## Bonus tracks completed
+
+* Expand the calendar to support more than the current month.
+* Properly handle overflow when multiple reminders appear on the same date.
+* Functionality to delete one or ALL the reminders for a specific day
+
+**Note: To run the app locally make sure of having .env or .env.local in your environment with the the following variable set: REACT_APP_OPEN_WHEATHER_KEY; that variable holds the API key for the weather service**
+
 ## Available Scripts
 
 In the project directory, you can run:
