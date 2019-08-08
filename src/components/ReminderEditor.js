@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { DEFAULT_CITIES, DEFAULT_COLORS } from "../commons";
-import { fetchWeather } from "../api";
+import api from "../api";
 
 const useBoxStyles = makeStyles({
   textField: {
@@ -17,7 +17,7 @@ const ReminderEditor = ({ reminder, onSave, onDelete, ...rest }) => {
 
   useEffect(() => {
     async function getForecast() {
-      const forecast = await fetchWeather(city.city);
+      const forecast = await api.fetchWeather(city.city);
       setForecast(forecast);
     }
     getForecast();
@@ -48,7 +48,7 @@ const ReminderEditor = ({ reminder, onSave, onDelete, ...rest }) => {
   };
 
   return (
-    <Box display="flex" width="400px" flexDirection="column" {...rest}>
+    <Box display="flex" minWidth="300px" flexDirection="column" {...rest}>
       <form>
         <TextField
           id="reminder-text"
@@ -126,12 +126,7 @@ const ReminderEditor = ({ reminder, onSave, onDelete, ...rest }) => {
             </option>
           ))}
         </TextField>
-        <Box
-          display="flex"
-          flexDirection="row"
-          justifyContent="space-between"
-          width="70%"
-        >
+        <Box display="flex" flexDirection="row" justifyContent="space-between">
           <Button
             variant="contained"
             color="primary"

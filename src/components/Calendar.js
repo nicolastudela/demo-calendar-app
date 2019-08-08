@@ -45,6 +45,7 @@ export default () => {
   const [reminders, setReminders] = useState(null);
   const classes = useStyles();
 
+  // TODO SELECT MONTH BONUS FUNCTIONALITY WOULD BE EASILY ADDED USING THIS PIECE OF STATE.
   const [selectedMonth, setSelectedMonth] = useState({
     year: NOW.getFullYear(),
     month: NOW.getMonth() + 1
@@ -86,6 +87,7 @@ export default () => {
   };
 
   const onRemoveReminders = date => {
+    //TODO BONUS FEATURE, going through reminders and removing all belonging to this date
     alert(`SOON it will remove all reminders for the following date: ${date}`);
   };
 

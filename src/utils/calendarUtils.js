@@ -17,8 +17,9 @@ export const formattedDate = date =>
   ).slice(-2)}`;
 
 export const formattedDateTime = date =>
-  `${date.getFullYear()}-${date.getMonth() +
-    1}-${date.getDate()}T${date.getHours()}:${date.getMinutes()}`;
+  `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(-2)}-${(
+    "0" + date.getDate()
+  ).slice(-2)}T${date.getHours()}:${date.getMinutes()}`;
 
 export const parseFormattedDateTime = formattedDateTime =>
   new Date(formattedDateTime);

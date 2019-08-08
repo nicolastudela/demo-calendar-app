@@ -10,7 +10,7 @@ const request = async (url, options = {}) => {
 
 const basicCache = {};
 
-export const fetchWeather = async city => {
+const fetchWeather = async city => {
   if (basicCache[city]) {
     return Promise.resolve(basicCache[city]);
   }
@@ -24,4 +24,8 @@ export const fetchWeather = async city => {
   }));
 
   return basicCache[city];
+};
+
+export default {
+  fetchWeather
 };

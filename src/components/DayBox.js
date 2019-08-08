@@ -35,6 +35,7 @@ const DayBox = ({
 }) => {
   const classes = useBoxStyles();
 
+  // sorting reminders asc
   if (reminders) {
     reminders.sort((a, b) => {
       const [bHours, bMinutes] = getTimeFromDateTime(b.dateTime).split(":");
@@ -54,7 +55,7 @@ const DayBox = ({
         <Box pl="3px">{getDayFromDate(date)}</Box>
         <Box>
           <span
-            id={`add-${date}`}
+            data-testid={`add-${date}`}
             style={{
               backgroundColor: "lightgreen"
             }}
